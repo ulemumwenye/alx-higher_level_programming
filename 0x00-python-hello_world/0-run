@@ -1,2 +1,4 @@
 #!/bin/bash
+#comment by kenan
 python3 $PYFILE
+
