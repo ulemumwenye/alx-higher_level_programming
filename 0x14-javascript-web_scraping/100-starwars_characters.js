@@ -21,7 +21,7 @@ if (filmUrl) {
       const filmData = JSON.parse(body);
       const characters = filmData.characters;
 
-      fetchCharacters(characters);
+      fetchCharacterNames(characters);
     } else {
       console.error('Error:', error);
     }
@@ -30,7 +30,7 @@ if (filmUrl) {
   console.error('Invalid movie ID');
 }
 
-function fetchCharacters(characters) {
+function fetchCharacterNames(characters) {
   let counter = 0;
 
   function fetchCharacter(url) {
