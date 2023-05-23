@@ -1,30 +1,55 @@
 #!/usr/bin/node
 
 const request = require('request');
-const baseUrl = 'https://swapi.dev/api/people/';
-let allCharacters = [];
 
-function fetchCharacters(url) {
-  request(url, function (error, response, body) {
+const movieId = process.argv[2];
+
+const filmUrls = {
+  1: 'https://swapi.dev/api/films/1/',
+  2: 'https://swapi.dev/api/films/2/',
+  3: 'https://swapi.dev/api/films/3/',
+  4: 'https://swapi.dev/api/films/4/',
+  5: 'https://swapi.dev/api/films/5/',
+  6: 'https://swapi.dev/api/films/6/',
+};
+
+const filmUrl = filmUrls[movieId];
+
+if (filmUrl) {
+  request(filmUrl, function (error, response, body) {
     if (!error && response.statusCode === 200) {
-      const data = JSON.parse(body);
-      const results = data.results;
-      allCharacters = allCharacters.concat(results);
-      if (data.next) {
-        fetchCharacters(data.next);
-      } else {
-        printCharacters();
-      }
+      const filmData = JSON.parse(body);
+      const characters = filmData.characters;
+
+      fetchCharacters(characters);
     } else {
       console.error('Error:', error);
     }
   });
+} else {
+  console.error('Invalid movie ID');
 }
 
-function printCharacters() {
-  allCharacters.forEach((character) => {
-    console.log(character.name);
-  });
-}
+function fetchCharacters(characters) {
+  let counter = 0;
 
-fetchCharacters(baseUrl);
+  function fetchCharacter(url) {
+    request(url, function (error, response, body) {
+      if (!error && response.statusCode === 200) {
+        const characterData = JSON.parse(body);
+        console.log(characterData.name);
+
+        counter++;
+        if (counter < characters.length) {
+          fetchCharacter(characters[counter]);
+        }
+      } else {
+        console.error('Error:', error);
+      }
+    });
+  }
+
+  if (characters.length > 0) {
+    fetchCharacter(characters[counter]);
+  }
+}
